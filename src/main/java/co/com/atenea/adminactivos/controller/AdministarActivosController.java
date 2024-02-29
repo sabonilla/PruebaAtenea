@@ -54,7 +54,15 @@ public class AdministarActivosController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Lista de activos obtenida con éxito"),
 			@ApiResponse(code = 500, message = "Error interno del servidor") })
 	@GetMapping
-	public ResponseEntity<List<ActivoFijo>> getAllActivos() {
+	public ResponseEntity<Object> getAllActivos() {	
+		
+		List<ActivoFijo> activos = administracionActivosService.getAllActivos();
+	    if (activos.isEmpty()) {
+	        // Devolver respuesta con código de estado 404 y un mensaje personalizado
+	        ApiResponseMessage responseMessage = new ApiResponseMessage(404, "No se encontraron activos");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
+	    }	
+		
 		return ResponseEntity.ok(administracionActivosService.getAllActivos());
 	}
 
