@@ -17,27 +17,51 @@ import co.com.atenea.adminactivos.repository.ActivosFijosRepository;
 import co.com.atenea.adminactivos.service.AdministracionActivosService;
 import lombok.extern.log4j.Log4j2;
 
+// TODO: Auto-generated Javadoc
 /**
- * @author sanal
+ * The Class AdministracionActivosServiceImpl.
  *
+ * @author sanal
  */
 @Service
+
+/** The Constant log. */
 @Log4j2
 public class AdministracionActivosServiceImpl implements AdministracionActivosService {
 
 	@Autowired
 	private ActivosFijosRepository activosFijosRepository;
 
+	/**
+	 * Gets the all activos.
+	 *
+	 * @return the all activos
+	 */
 	@Override
 	public List<ActivoFijo> getAllActivos() {
 		return activosFijosRepository.findAll();
 	}
 
+	/**
+	 * Buscar activos por criterios.
+	 *
+	 * @param tipo the tipo
+	 * @param fechaCompra the fecha compra
+	 * @param serial the serial
+	 * @return the list
+	 */
 	@Override
 	public List<ActivoFijo> buscarActivosPorCriterios(ActivoFijo.TipoActivo tipo, Date fechaCompra, String serial) {
         return activosFijosRepository.findByTipoOrFechaCompraOrSerial(tipo, fechaCompra, serial);
     }
 
+	/**
+	 * Creates the activo.
+	 *
+	 * @param activo the activo
+	 * @return the activo fijo
+	 * @throws FechasInvalidasException the fechas invalidas exception
+	 */
 	@Transactional
 	@Override
 	public ActivoFijo createActivo(ActivoFijo activo) throws FechasInvalidasException {
@@ -48,6 +72,13 @@ public class AdministracionActivosServiceImpl implements AdministracionActivosSe
 		return activosFijosRepository.save(activo);
 	}
 
+	/**
+	 * Update activo.
+	 *
+	 * @param id the id
+	 * @param updatedActivo the updated activo
+	 * @return the activo fijo
+	 */
 	@Override
 	public ActivoFijo updateActivo(Long id, ActivoFijo updatedActivo) {
 
@@ -70,6 +101,12 @@ public class AdministracionActivosServiceImpl implements AdministracionActivosSe
 		return activosFijosRepository.save(activoEncontrado);
 	}
 
+	/**
+	 * Fechas validas.
+	 *
+	 * @param activoFijo the activo fijo
+	 * @return true, if successful
+	 */
 	private boolean fechasValidas(ActivoFijo activoFijo) {
 		// Implementar la lógica para validar las fechas
 		Date fechaCompra = activoFijo.getFechaCompra();
