@@ -12,9 +12,11 @@ import co.com.atenea.adminactivos.modelo.Persona;
 import co.com.atenea.adminactivos.repository.PersonaRepository;
 import co.com.atenea.adminactivos.service.PersonaService;
 
+// TODO: Auto-generated Javadoc
 /**
- * @author sanal
+ * The Class PersonaSeviceImpl.
  *
+ * @author sanal
  */
 @Service
 public class PersonaSeviceImpl implements PersonaService{
@@ -23,6 +25,11 @@ public class PersonaSeviceImpl implements PersonaService{
 	private PersonaRepository peroRepository;
 	
 	
+	/**
+	 * Gets the all personas.
+	 *
+	 * @return the all personas
+	 */
 	@Override
 	public List<Persona> getAllPersonas() {
 		

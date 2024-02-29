@@ -9,8 +9,9 @@ import org.springframework.stereotype.Repository;
 import co.com.atenea.adminactivos.modelo.Area;
 
 /**
- * @author sanal
+ * The Interface AreasRepository.
  *
+ * @author sanal
  */
 @Repository
 public interface AreasRepository extends JpaRepository<Area, Long>{

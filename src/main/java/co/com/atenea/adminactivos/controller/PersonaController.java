@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import co.com.atenea.adminactivos.modelo.Persona;
 import co.com.atenea.adminactivos.service.PersonaService;
 
+// TODO: Auto-generated Javadoc
 /**
- * @author sanal
+ * The Class PersonaController.
  *
+ * @author sanal
  */
 @RestController
 @RequestMapping("/api/persona")
@@ -25,6 +27,11 @@ public class PersonaController {
 	@Autowired
 	private PersonaService personaService;
 	
+	/**
+	 * Gets the all personas.
+	 *
+	 * @return the all personas
+	 */
 	@GetMapping
 	public ResponseEntity<List<Persona>> getAllPersonas(){
 		return ResponseEntity.ok(personaService.getAllPersonas());
