@@ -9,8 +9,9 @@ import org.springframework.stereotype.Repository;
 import co.com.atenea.adminactivos.modelo.Persona;
 
 /**
- * @author sanal
+ * The Interface PersonaRepository.
  *
+ * @author sanal
  */
 @Repository
 public interface PersonaRepository extends JpaRepository<Persona, Long>{

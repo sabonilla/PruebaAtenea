@@ -22,50 +22,107 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.com.atenea.adminactivos.exceptions.ApiResponseMessage;
 import co.com.atenea.adminactivos.modelo.ActivoFijo;
 import co.com.atenea.adminactivos.service.AdministracionActivosService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
+// TODO: Auto-generated Javadoc
 /**
- * @author sanal
+ * The Class AdministarActivosController.
  *
+ * @author sanal
  */
-@CrossOrigin(origins="*")
+@Api(tags = "AdministarActivosController")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/activos")
 public class AdministarActivosController {
-
+	
 	@Autowired
-    private AdministracionActivosService administracionActivosService;
-	
+	private AdministracionActivosService administracionActivosService;
+
+	/**
+	 * Gets the all activos.
+	 *
+	 * @return the all activos
+	 */
+	@ApiOperation("Obtener todos los activos")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Lista de activos obtenida con éxito"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") })
 	@GetMapping
-    public ResponseEntity<List<ActivoFijo>> getAllActivos() {
-        return ResponseEntity.ok(administracionActivosService.getAllActivos());
-    }
+	public ResponseEntity<List<ActivoFijo>> getAllActivos() {
+		return ResponseEntity.ok(administracionActivosService.getAllActivos());
+	}
 
+	/**
+	 * Buscar activos por parametros.
+	 *
+	 * @param tipo the tipo
+	 * @param fechaCompra the fecha compra
+	 * @param serial the serial
+	 * @return the response entity
+	 */
+	@ApiOperation("Buscar activos por parámetros")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Lista de activos encontrada con éxito"),
+			@ApiResponse(code = 400, message = "Datos faltantes al realizar la búsqueda"),
+			@ApiResponse(code = 404, message = "No se encontraron activos"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") })
 	@GetMapping("/buscar")
-    public ResponseEntity<List<ActivoFijo>> buscarActivosPorParametros(
-            @RequestParam(required = false) ActivoFijo.TipoActivo tipo,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaCompra,
-            @RequestParam(required = false) String serial) {
-		
-		 if (fechaCompra != null) {
-		        Instant instant = fechaCompra.toInstant();
-		        fechaCompra = Date.from(instant.atZone(ZoneId.of("UTC")).toInstant());
-		    }
-        // Lógica para realizar la búsqueda basada en los parámetros recibidos
-        List<ActivoFijo> activos = administracionActivosService.buscarActivosPorCriterios(tipo, fechaCompra, serial);
+	public ResponseEntity<Object> buscarActivosPorParametros(
+			@RequestParam(required = false) ActivoFijo.TipoActivo tipo,
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaCompra,
+			@RequestParam(required = false) String serial) {
 
-        return ResponseEntity.ok(activos);
-    }
+		if (fechaCompra != null) {
+			Instant instant = fechaCompra.toInstant();
+			fechaCompra = Date.from(instant.atZone(ZoneId.of("UTC")).toInstant());
+		}
+		// Lógica para realizar la búsqueda basada en los parámetros recibidos
+	    List<ActivoFijo> activos = administracionActivosService.buscarActivosPorCriterios(tipo, fechaCompra, serial);
 
-    @PostMapping
-    public ResponseEntity<ActivoFijo> createActivo(@RequestBody ActivoFijo activo) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(administracionActivosService.createActivo(activo));
-    }
+	    if (activos.isEmpty()) {
+	        // Devolver respuesta con código de estado 404 y un mensaje personalizado
+	        ApiResponseMessage responseMessage = new ApiResponseMessage(404, "No se encontraron activos");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
+	    }
 
-    @PutMapping("/{id}")
-    public ActivoFijo updateActivo(@PathVariable Long id, @RequestBody ActivoFijo updatedActivo) {
-        return administracionActivosService.updateActivo(id, updatedActivo);
-    }
-	
+	    return ResponseEntity.ok(activos);
+	}
+
+	/**
+	 * Creates the activo.
+	 *
+	 * @param activo the activo
+	 * @return the response entity
+	 */
+	@ApiOperation("Crear un nuevo activo")
+	@ApiResponses(value = { @ApiResponse(code = 201, message = "Activo creado con éxito"),
+			@ApiResponse(code = 400, message = "Datos faltantes al crear el activo"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") })
+	@PostMapping
+	public ResponseEntity<ActivoFijo> createActivo(@RequestBody ActivoFijo activo) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(administracionActivosService.createActivo(activo));
+	}
+
+	/**
+	 * Update activo.
+	 *
+	 * @param id the id
+	 * @param updatedActivo the updated activo
+	 * @return the activo fijo
+	 */
+	@ApiOperation("Actualizar un activo por su ID")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Activo actualizado con éxito"),
+			@ApiResponse(code = 400, message = "Datos faltantes al actualizar el activo"),
+			@ApiResponse(code = 404, message = "Activo no encontrado"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") })
+	@PutMapping("/{id}")
+	public ActivoFijo updateActivo(@PathVariable Long id, @RequestBody ActivoFijo updatedActivo){
+		return administracionActivosService.updateActivo(id, updatedActivo);
+	}
+
 }
